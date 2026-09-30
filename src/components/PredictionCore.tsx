@@ -231,7 +231,7 @@ export const PredictionCore: React.FC<PredictionCoreProps> = ({
           }`}
         >
           <div className="flex items-center justify-between text-[10px] font-bold font-orbitron tracking-wider text-slate-300">
-            <span>PRIMARY 90% SIZE BET</span>
+            <span>PRIMARY {levelPlan.sizePct || 90}% SIZE BET</span>
             <span className="rounded bg-black/40 px-1.5 py-0.5 text-[9px] text-emerald-400 font-bold">
               NET: +₹{levelPlan.sizeNetProfit}
             </span>
@@ -257,10 +257,10 @@ export const PredictionCore: React.FC<PredictionCoreProps> = ({
           </div>
         </div>
 
-        {/* Right: 10% SAME-SIDE Single Number Bet */}
+        {/* Right: SAME-SIDE Single Number Bet */}
         <div className="relative overflow-hidden rounded-2xl border border-emerald-500/50 bg-gradient-to-br from-emerald-500/15 via-[#0c1a14]/40 to-[#0c1020] p-4 text-center shadow-[0_0_25px_rgba(34,211,127,0.2)]">
           <div className="flex items-center justify-between text-[10px] font-bold font-orbitron tracking-wider text-emerald-300">
-            <span>SAME-SIDE NUMBER (10%)</span>
+            <span>SAME-SIDE NUMBER ({levelPlan.numPct || 10}%)</span>
             <span className="rounded bg-emerald-500/20 border border-emerald-500/40 px-1.5 py-0.5 text-[9px] text-emerald-300 font-bold">
               JACKPOT: +₹{levelPlan.numNetProfit}
             </span>

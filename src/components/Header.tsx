@@ -6,6 +6,7 @@ interface HeaderProps {
   license: LicenseInfo | null;
   currentWallet: number;
   targetWallet: number;
+  sizePct?: number;
   running: boolean;
   soundEnabled: boolean;
   onToggleSound: () => void;
@@ -17,12 +18,15 @@ export const Header: React.FC<HeaderProps> = ({
   license,
   currentWallet,
   targetWallet,
+  sizePct = 90,
   running,
   soundEnabled,
   onToggleSound,
   onOpenSessionModal,
   onLogout,
 }) => {
+  const numPct = 100 - sizePct;
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#0a0f20]/80 backdrop-blur-xl">
       <div className="relative mx-auto flex max-w-5xl items-center justify-between px-3 py-2.5 sm:px-4">
@@ -34,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 font-orbitron text-xl font-black text-black shadow-[0_0_20px_rgba(255,107,0,0.4)]">
             N2
             <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[8px] font-bold text-black ring-2 ring-[#0a0f20]">
-              90
+              {sizePct}
             </span>
           </div>
           <div>
@@ -43,11 +47,11 @@ export const Header: React.FC<HeaderProps> = ({
                 NARUTO UZUMAKI V2
               </h1>
               <span className="hidden rounded-full border border-orange-500/30 bg-orange-500/10 px-1.5 py-0.5 font-orbitron text-[9px] font-bold text-orange-400 sm:inline-block">
-                90% SIZE • 10% NUM
+                {sizePct}% SIZE • {numPct}% NUM
               </span>
             </div>
             <p className="text-[9px] font-semibold tracking-wider text-slate-400">
-              4-LEVEL • 90% SIZE / 10% SAME NUM • CYBER MATRIX
+              4-LEVEL • {sizePct}% SIZE / {numPct}% SAME NUM • CYBER MATRIX
             </p>
           </div>
         </div>

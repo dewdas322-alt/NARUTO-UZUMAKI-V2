@@ -33,6 +33,7 @@ export default function App() {
     targetWallet: 1000,
     targetReached: false,
     level: 1,
+    sizePct: 90,
     wins: 0,
     losses: 0,
     jackpots: 0,
@@ -108,11 +109,12 @@ export default function App() {
     if (next) sound.playClick();
   };
 
-  // Auto 4-Level Martingale Calculation
+  // Auto 4-Level Martingale Calculation with dynamic sizePct
   const martingale = calculate4LevelMartingale(
     session.currentWallet,
     session.targetWallet,
-    session.level
+    session.level,
+    session.sizePct || 90
   );
   const activeLevelPlan = martingale.levels[session.level - 1] || martingale.levels[0];
 
@@ -201,7 +203,12 @@ export default function App() {
       const targetP = nextPeriod(latest.period);
       const currentCurWallet = sessionRef.current.currentWallet;
       const currentCurLevel = sessionRef.current.level;
-      const curPlan = calculate4LevelMartingale(currentCurWallet, sessionRef.current.targetWallet, currentCurLevel);
+      const curPlan = calculate4LevelMartingale(
+        currentCurWallet,
+        sessionRef.current.targetWallet,
+        currentCurLevel,
+        sessionRef.current.sizePct || 90
+      );
       const curActiveLevelPlan = curPlan.levels[currentCurLevel - 1] || curPlan.levels[0];
 
       const pred = fusePrediction(recs, targetP, curGame, currentCurLevel, curActiveLevelPlan);
@@ -325,12 +332,13 @@ export default function App() {
     lastSeenPeriodRef.current = {};
   };
 
-  const handleConfirmSession = (w: number, t: number) => {
+  const handleConfirmSession = (w: number, t: number, sizePct: number = 90) => {
     setSession((prev) => ({
       ...prev,
       initialWallet: w,
       currentWallet: w,
       targetWallet: t,
+      sizePct: sizePct || 90,
       level: 1,
       targetReached: false,
     }));
@@ -399,6 +407,7 @@ export default function App() {
         <SessionSetupModal
           initialWallet={session.initialWallet}
           initialTarget={session.targetWallet}
+          initialSizePct={session.sizePct || 90}
           onConfirm={handleConfirmSession}
           onClose={() => setShowSessionModal(false)}
           isFirstSetup={session.wins === 0 && session.losses === 0}
@@ -422,6 +431,7 @@ export default function App() {
         license={license}
         currentWallet={session.currentWallet}
         targetWallet={session.targetWallet}
+        sizePct={session.sizePct || 90}
         running={running}
         soundEnabled={soundEnabled}
         onToggleSound={handleToggleSound}

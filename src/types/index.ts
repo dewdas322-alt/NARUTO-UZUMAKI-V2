@@ -34,8 +34,10 @@ export interface LevelPlan {
   name: string;
   percentage: number; // % of total wallet (sums to 100% across 4 levels)
   totalBet: number;
-  sizeBet: number;    // 90% of totalBet
-  sameNumBet: number; // 10% of totalBet (Same Side Single Number)
+  sizeBet: number;    // Size bet amount
+  sameNumBet: number; // Same Side Single Number bet amount
+  sizePct: number;    // Manual percentage on Size (e.g. 90)
+  numPct: number;     // Manual percentage on Same Number (e.g. 10)
   potentialSizeWin: number;
   potentialNumWin: number;
   sizeNetProfit: number; // Guaranteed net profit if size wins
@@ -49,6 +51,8 @@ export interface Martingale4Levels {
   currentLevel: number; // 1, 2, 3, 4 (Primary Focus on Level 1 & 2)
   levels: LevelPlan[];
   totalAllocated: number;
+  sizePct: number; // Manual percentage on Size (e.g. 90)
+  numPct: number;  // Manual percentage on Same Number (e.g. 10)
   isCustomMultiplier?: boolean;
 }
 
@@ -119,6 +123,7 @@ export interface SessionState {
   targetWallet: number;
   targetReached: boolean;
   level: number;
+  sizePct: number; // Manual Size % (default 90, number % = 100 - sizePct)
   wins: number;
   losses: number;
   jackpots: number;

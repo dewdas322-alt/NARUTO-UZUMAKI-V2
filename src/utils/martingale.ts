@@ -1,24 +1,30 @@
 import { LevelPlan, Martingale4Levels } from '../types';
 
 /**
- * 4-LEVEL MARTINGALE LADDER (90% SIZE • 10% SAME-SIDE NUMBER)
+ * 4-LEVEL MARTINGALE LADDER WITH CUSTOMIZABLE SIZE & NUMBER RATIO
  * Level 1 + Level 2 + Level 3 + Level 4 = exactly 100% of active wallet amount.
  *
  * ALLOCATION FORMULA:
- * - 90% on Size (BIG / SMALL) -> High-Volume Primary Win Engine
- * - 10% on Single SAME-SIDE Number -> 9.0x Jackpot Booster
+ * - User-Customizable Size % (Default 90%)
+ * - User-Customizable Same-Side Number % (Default 10%, = 100 - sizePct)
  *
  * WIN SCENARIOS:
- * - Size Wins (1.96x): Covers total bet and yields high net profit.
+ * - Size Wins (1.96x): Covers total bet and yields net profit.
  * - Single Same-Side Number Wins (9.0x): 9x multiplier payout.
  * - DOUBLE WIN: When Size & Same-Side Number BOTH hit together, total payout is (1.96x + 9.0x) giving massive profit!
  */
 export function calculate4LevelMartingale(
   walletAmount: number,
   targetAmount: number,
-  currentLevel: number = 1
+  currentLevel: number = 1,
+  customSizePct: number = 90
 ): Martingale4Levels {
   const safeWallet = Math.max(20, Math.round(walletAmount));
+
+  // Safe clamp for custom percentage (50% to 95%, default 90%)
+  const sizePct = Math.max(50, Math.min(95, Math.round(customSizePct || 90)));
+  const numPct = 100 - sizePct;
+  const sizeRatio = sizePct / 100;
 
   // Optimal 4-level progression using 100% of wallet:
   // Level 1: ~5.0% (Primary Strike)
@@ -55,12 +61,12 @@ export function calculate4LevelMartingale(
   let cumulativePrior = 0;
 
   const levels: LevelPlan[] = rawBets.map((totalBet, idx) => {
-    // 90% on Size, 10% on Single SAME-SIDE Number
-    let sizeBet = Math.round(totalBet * 0.90);
+    // Dynamic Size and Number allocation according to user preference
+    let sizeBet = Math.round(totalBet * sizeRatio);
     let sameNumBet = totalBet - sizeBet;
 
-    // Minimum allocations
-    if (sameNumBet === 0 && totalBet >= 6) {
+    // Minimum allocations when total bet permits
+    if (sameNumBet === 0 && totalBet >= 5) {
       sameNumBet = 1;
       sizeBet = totalBet - sameNumBet;
     }
@@ -88,6 +94,8 @@ export function calculate4LevelMartingale(
       totalBet,
       sizeBet,
       sameNumBet,
+      sizePct,
+      numPct,
       potentialSizeWin,
       potentialNumWin,
       sizeNetProfit,
@@ -104,11 +112,13 @@ export function calculate4LevelMartingale(
     currentLevel: Math.max(1, Math.min(4, currentLevel)),
     levels,
     totalAllocated,
+    sizePct,
+    numPct,
   };
 }
 
 /**
- * Calculates result PnL for a round with 90/10 SAME-SIDE prediction logic
+ * Calculates result PnL for a round with customizable SAME-SIDE prediction logic
  */
 export function calculateRoundPnL(
   levelPlan: LevelPlan,

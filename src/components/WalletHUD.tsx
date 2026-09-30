@@ -48,6 +48,13 @@ export const WalletHUD: React.FC<WalletHUDProps> = ({
               >
                 EDIT
               </button>
+              <button
+                onClick={onEditSession}
+                className="rounded-md bg-cyan-500/10 px-1.5 py-0.5 font-orbitron text-[8px] font-bold text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20 transition-all"
+                title="Click to adjust Size & Number split"
+              >
+                {martingale.sizePct || 90}%S / {martingale.numPct || 10}%N
+              </button>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-orbitron text-xl font-black text-white sm:text-2xl">

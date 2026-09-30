@@ -17,10 +17,10 @@ export const MartingaleLevelCard: React.FC<MartingaleLevelCardProps> = ({ martin
           </div>
           <div>
             <h3 className="font-orbitron text-xs font-black tracking-wider text-white">
-              4-LEVEL MARTINGALE LADDER (90% SIZE • 10% SAME NUM)
+              4-LEVEL MARTINGALE LADDER ({martingale.sizePct || 90}% SIZE • {martingale.numPct || 10}% SAME NUM)
             </h3>
             <p className="text-[9px] font-semibold text-slate-400">
-              90% Size Primary • 10% Same-Side Number • Core Strike on L1 & L2 (L3-L4 Safety Backup)
+              {martingale.sizePct || 90}% Size Primary • {martingale.numPct || 10}% Same-Side Number • Core Strike on L1 & L2 (L3-L4 Safety Backup)
             </p>
           </div>
         </div>
@@ -94,14 +94,14 @@ export const MartingaleLevelCard: React.FC<MartingaleLevelCardProps> = ({ martin
                 </div>
               </div>
 
-              {/* 90% / 10% Bet Split Breakdown */}
+              {/* Bet Split Breakdown */}
               <div className="mt-2.5 space-y-1 border-t border-white/5 pt-2 text-[10px]">
                 <div className="flex items-center justify-between text-slate-300">
-                  <span className="text-orange-400 font-bold">90% Size:</span>
+                  <span className="text-orange-400 font-bold">{lvl.sizePct || 90}% Size:</span>
                   <span className="font-orbitron font-bold">₹{lvl.sizeBet}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-300">
-                  <span className="text-emerald-400 font-bold">10% Same Num:</span>
+                  <span className="text-emerald-400 font-bold">{lvl.numPct || 10}% Same Num:</span>
                   <span className="font-orbitron font-bold">₹{lvl.sameNumBet}</span>
                 </div>
               </div>

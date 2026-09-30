@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Target, Wallet, ArrowRight, ShieldCheck, Flame, Check, Zap } from 'lucide-react';
+import { Target, Wallet, ArrowRight, ShieldCheck, Flame, Check, Zap, Percent, Sliders } from 'lucide-react';
 import { calculate4LevelMartingale } from '../utils/martingale';
 import { sound } from '../utils/audio';
 
 interface SessionSetupModalProps {
   initialWallet: number;
   initialTarget: number;
-  onConfirm: (wallet: number, target: number) => void;
+  initialSizePct?: number;
+  onConfirm: (wallet: number, target: number, sizePct: number) => void;
   onClose?: () => void;
   isFirstSetup?: boolean;
 }
@@ -14,19 +15,23 @@ interface SessionSetupModalProps {
 export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
   initialWallet,
   initialTarget,
+  initialSizePct = 90,
   onConfirm,
   onClose,
   isFirstSetup = false,
 }) => {
   const [walletStr, setWalletStr] = useState(String(initialWallet || 500));
   const [targetStr, setTargetStr] = useState(String(initialTarget || 1000));
+  const [sizePct, setSizePct] = useState<number>(initialSizePct || 90);
   const [error, setError] = useState('');
 
   const currentWalletVal = Math.max(20, parseInt(walletStr, 10) || 20);
   const currentTargetVal = Math.max(currentWalletVal + 10, parseInt(targetStr, 10) || currentWalletVal * 2);
 
-  // Live auto-calculated 4-level plan preview
-  const livePlan = calculate4LevelMartingale(currentWalletVal, currentTargetVal, 1);
+  const numPct = 100 - sizePct;
+
+  // Live auto-calculated 4-level plan preview with dynamic sizePct
+  const livePlan = calculate4LevelMartingale(currentWalletVal, currentTargetVal, 1, sizePct);
 
   const handleWalletPreset = (amt: number) => {
     sound.playClick();
@@ -40,6 +45,11 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
     sound.playClick();
     const newTarget = Math.round(currentWalletVal * multiplier);
     setTargetStr(String(newTarget));
+  };
+
+  const handleSizePctChange = (newSize: number) => {
+    sound.playClick();
+    setSizePct(Math.max(50, Math.min(95, newSize)));
   };
 
   const handleSave = () => {
@@ -57,7 +67,7 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
     }
 
     sound.playBetPlaced();
-    onConfirm(w, t);
+    onConfirm(w, t, sizePct);
   };
 
   return (
@@ -77,7 +87,7 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
                 {isFirstSetup ? 'SET WALLET & TARGET SESSION' : 'ADJUST TARGET SESSION'}
               </h2>
               <p className="text-[10px] font-semibold text-slate-400">
-                4-Level Martingale Ladder • 90% Size & 10% Same-Side Number
+                4-Level Martingale • Manual Size & Number Split Control
               </p>
             </div>
           </div>
@@ -181,12 +191,68 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
           </div>
         </div>
 
+        {/* MANUAL SIZE % & NUMBER % ALLOCATION CONTROLLER */}
+        <div className="mt-4 rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-950/20 via-[#0a0f20] to-[#070a14] p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
+              <Sliders className="h-4 w-4 text-cyan-400" />
+              MANUAL BET SPLIT RATIO
+            </div>
+            <div className="flex items-center gap-2 font-orbitron text-xs font-black">
+              <span className="text-orange-400">{sizePct}% SIZE</span>
+              <span className="text-slate-500">•</span>
+              <span className="text-emerald-400">{numPct}% NUMBER</span>
+            </div>
+          </div>
+
+          {/* Quick Split Presets */}
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {[
+              { label: '90% / 10% (Default)', s: 90 },
+              { label: '85% / 15%', s: 85 },
+              { label: '80% / 20%', s: 80 },
+              { label: '75% / 25%', s: 75 },
+              { label: '95% / 5%', s: 95 },
+            ].map(({ label, s }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => handleSizePctChange(s)}
+                className={`rounded-xl px-2.5 py-1 font-orbitron text-[10px] font-bold transition-all ${
+                  sizePct === s
+                    ? 'border border-cyan-400 bg-cyan-500/20 text-cyan-300 shadow-[0_0_12px_rgba(0,212,255,0.4)]'
+                    : 'border border-white/10 bg-white/5 text-slate-400 hover:text-white'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Interactive Range Slider */}
+          <div className="mt-3.5 space-y-1.5">
+            <div className="flex justify-between text-[10px] font-bold text-slate-400">
+              <span>Size: {sizePct}% (1.96x)</span>
+              <span>Same-Side Number: {numPct}% (9.0x)</span>
+            </div>
+            <input
+              type="range"
+              min="50"
+              max="95"
+              step="1"
+              value={sizePct}
+              onChange={(e) => setSizePct(parseInt(e.target.value, 10))}
+              className="w-full accent-cyan-400 cursor-pointer h-2 rounded-lg bg-black/60 border border-white/10"
+            />
+          </div>
+        </div>
+
         {/* Live Auto-Generated 4-Level Martingale Preview */}
         <div className="mt-4 rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/5 via-[#0c1022] to-cyan-500/5 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <Flame className="h-4 w-4 text-orange-400" />
-              LIVE 4-LEVEL BREAKDOWN (90% SIZE • 10% SAME NUM)
+              LIVE 4-LEVEL BREAKDOWN ({sizePct}% SIZE • {numPct}% SAME NUM)
             </div>
             <div className="font-orbitron text-[10px] font-bold text-emerald-400">
               SUM = ₹{livePlan.totalAllocated} (100% WALLET)
@@ -218,10 +284,10 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
 
                 <div className="flex items-center gap-2 text-[10px] font-bold">
                   <span className="rounded-md border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-orange-300">
-                    90% Size: ₹{lvl.sizeBet} (Net: +₹{lvl.sizeNetProfit})
+                    {sizePct}% Size: ₹{lvl.sizeBet} (Net: +₹{lvl.sizeNetProfit})
                   </span>
                   <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-emerald-300">
-                    10% Same Num: ₹{lvl.sameNumBet} (Net: +₹{lvl.numNetProfit})
+                    {numPct}% Num: ₹{lvl.sameNumBet} (Net: +₹{lvl.numNetProfit})
                   </span>
                 </div>
               </div>
@@ -240,7 +306,7 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 py-3.5 font-orbitron text-xs font-black tracking-wider text-black shadow-[0_0_30px_rgba(255,107,0,0.4)] transition-all hover:scale-[1.01] hover:shadow-[0_0_40px_rgba(255,107,0,0.6)] active:scale-95"
         >
           <Check className="h-4 w-4" />
-          START 4-LEVEL TARGET SESSION (₹{currentWalletVal} → ₹{currentTargetVal})
+          APPLY TARGET & {sizePct}/{numPct} SPLIT (₹{currentWalletVal} → ₹{currentTargetVal})
         </button>
       </div>
     </div>

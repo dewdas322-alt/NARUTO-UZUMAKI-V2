@@ -18,11 +18,11 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
   }
 
   const { engines, cands, weights, agree, conf, regime, risk, singleSameNum } = prediction;
-  const A = engines.RDX;
-  const B = engines.VANTA;
-  const C = engines.NOCTIS;
-  const D = engines.BRAIN;
-  const M = engines.MARKET;
+  const A = engines.RDX as any;
+  const B = engines.VANTA as any;
+  const C = engines.NOCTIS as any;
+  const D = engines.BRAIN as any;
+  const M = engines.MARKET as any;
 
   return (
     <div className="space-y-4">
@@ -48,14 +48,14 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
                 prediction.call === 'BIG' ? 'text-orange-400' : 'text-cyan-400'
               }`}
             >
-              {prediction.call} (90%)
+              {prediction.call}
             </div>
           </div>
 
           <div className="rounded-xl border border-white/10 bg-black/40 p-2.5">
             <div className="text-[8px] font-bold text-slate-400 font-orbitron">SAME-SIDE NUM</div>
             <div className="font-orbitron text-sm font-black text-emerald-400">
-              #{singleSameNum.num} (10%)
+              #{singleSameNum.num}
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <Brain className="h-4 w-4 text-purple-400" />
-              NARUTO BRAIN (Neural)
+              NARUTO BRAIN (Neural RLE)
             </span>
             <span
               className={`rounded px-1.5 py-0.5 font-orbitron text-[9px] font-black ${
@@ -94,12 +94,12 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           </div>
           <div className="mt-2.5 space-y-1.5 text-[10px] text-slate-300">
             <div className="flex justify-between">
-              <span className="text-slate-400">Detected Pattern:</span>
-              <span className="font-orbitron text-white">{D?.pattern || 'Balanced'}</span>
+              <span className="text-slate-400">Detected Block Flow:</span>
+              <span className="font-orbitron text-white">{D?.pattern || 'BALANCED'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Human vs AI Read:</span>
-              <span className="text-slate-200">{D?.verdict || 'Converged'}</span>
+              <span className="text-slate-400">Execution Read:</span>
+              <span className="text-slate-200">{D?.conf >= 85 ? 'HIGH CONVICTION' : 'MOMENTUM FLOW'}</span>
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <BarChart3 className="h-4 w-4 text-emerald-400" />
-              NARUTO MARKET (Regime)
+              NARUTO MARKET (EMA Momentum)
             </span>
             <span
               className={`rounded px-1.5 py-0.5 font-orbitron text-[9px] font-black ${
@@ -121,13 +121,13 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           </div>
           <div className="mt-2.5 space-y-1.5 text-[10px] text-slate-300">
             <div className="flex justify-between">
-              <span className="text-slate-400">Market State:</span>
-              <span className="font-orbitron text-white">{M?.state || 'Normal'}</span>
+              <span className="text-slate-400">Market Regime:</span>
+              <span className="font-orbitron text-white">{M?.state || 'NORMAL'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Alternation Rate (20):</span>
+              <span className="text-slate-400">EMA-5 Momentum:</span>
               <span className="font-orbitron text-slate-200">
-                {Math.round((M?.metrics?.alt20 || 0.5) * 100)}%
+                {M?.ema5 !== undefined ? `${Math.round(M.ema5 * 100)}%` : '50%'}
               </span>
             </div>
           </div>
@@ -138,7 +138,7 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <Cpu className="h-4 w-4 text-orange-400" />
-              NARUTO CORE (RDX Matrix)
+              NARUTO CORE (Streak Flow)
             </span>
             <span
               className={`rounded px-1.5 py-0.5 font-orbitron text-[9px] font-black ${
@@ -150,8 +150,8 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           </div>
           <div className="mt-2.5 space-y-1.5 text-[10px] text-slate-300">
             <div className="flex justify-between">
-              <span className="text-slate-400">Matrix Layers:</span>
-              <span className="font-orbitron text-white">{A?.layers?.length || 4} evaluated</span>
+              <span className="text-slate-400">Active Streak Length:</span>
+              <span className="font-orbitron text-white">{A?.streak || 1}× rounds</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">P(BIG) Probability:</span>
@@ -165,7 +165,7 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <Eye className="h-4 w-4 text-cyan-400" />
-              NARUTO VISION (Entropy & Markov)
+              NARUTO VISION (Markov Tensor)
             </span>
             <span
               className={`rounded px-1.5 py-0.5 font-orbitron text-[9px] font-black ${
@@ -177,12 +177,12 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           </div>
           <div className="mt-2.5 space-y-1.5 text-[10px] text-slate-300">
             <div className="flex justify-between">
-              <span className="text-slate-400">Pattern Basis:</span>
-              <span className="font-orbitron text-white truncate max-w-[160px]">{B?.basis || 'Alternation'}</span>
+              <span className="text-slate-400">Tensor Markov Model:</span>
+              <span className="font-orbitron text-white">Order-{B?.markovOrder || 2} Chain</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Markov Transition:</span>
-              <span className="font-orbitron text-slate-200">Digit #{B?.markov ?? 0}</span>
+              <span className="text-slate-400">Tensor Conviction:</span>
+              <span className="font-orbitron text-slate-200">{B?.conf || 80}%</span>
             </div>
           </div>
         </div>
@@ -192,7 +192,7 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <span className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <Shield className="h-4 w-4 text-rose-400" />
-              NARUTO GUARD (Pattern DB & Wilson Score)
+              NARUTO GUARD (Critical Pattern Match)
             </span>
             <span
               className={`rounded px-1.5 py-0.5 font-orbitron text-[9px] font-black ${
@@ -204,12 +204,12 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
           </div>
           <div className="mt-2.5 space-y-1.5 text-[10px] text-slate-300">
             <div className="flex justify-between">
-              <span className="text-slate-400">Matched DB Patterns:</span>
-              <span className="font-orbitron text-white">{C?.used?.length || 0} active sequences</span>
+              <span className="text-slate-400">Matched DB Pattern:</span>
+              <span className="font-orbitron text-white">{C?.pattern || 'MOMENTUM_ALIGN'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Guard Confidence Edge:</span>
-              <span className="font-orbitron text-slate-200">Bound: {C?.conf}%</span>
+              <span className="text-slate-400">Guard Conviction Bound:</span>
+              <span className="font-orbitron text-slate-200">{C?.conf}%</span>
             </div>
           </div>
         </div>

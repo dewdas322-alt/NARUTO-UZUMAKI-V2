@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Calculator, Wallet, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+import { Calculator, Wallet, TrendingUp, ShieldCheck, Zap, Sliders } from 'lucide-react';
 import { calculate4LevelMartingale } from '../utils/martingale';
 
 export const CalculatorTab: React.FC = () => {
   const [testWallet, setTestWallet] = useState(1000);
   const [testTarget, setTestTarget] = useState(2000);
+  const [sizePct, setSizePct] = useState(90);
 
-  const plan = calculate4LevelMartingale(testWallet, testTarget, 1);
+  const numPct = 100 - sizePct;
+  const plan = calculate4LevelMartingale(testWallet, testTarget, 1, sizePct);
 
   return (
     <div className="space-y-4">
@@ -16,10 +18,10 @@ export const CalculatorTab: React.FC = () => {
           <Calculator className="h-5 w-5 text-orange-400" />
           <div>
             <h3 className="font-orbitron text-xs font-black tracking-wider text-white">
-              INTERACTIVE 4-LEVEL MARTINGALE SIMULATOR (90% SIZE • 10% NUM)
+              INTERACTIVE 4-LEVEL MARTINGALE SIMULATOR
             </h3>
             <p className="text-[10px] text-slate-400">
-              100% wallet allocation across 4 levels • 90% Size & 10% Same-Side Number.
+              100% wallet allocation across 4 levels • Manual Size & Number Ratio Controller.
             </p>
           </div>
         </div>
@@ -80,13 +82,53 @@ export const CalculatorTab: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Manual Ratio Slider in Simulator */}
+        <div className="mt-4 rounded-xl border border-cyan-500/20 bg-black/40 p-3">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 font-orbitron">
+              <Sliders className="h-3.5 w-3.5" />
+              SIMULATE SPLIT RATIO:
+            </span>
+            <span className="font-orbitron text-xs font-black">
+              <span className="text-orange-400">{sizePct}% SIZE</span>
+              <span className="text-slate-500"> / </span>
+              <span className="text-emerald-400">{numPct}% NUMBER</span>
+            </span>
+          </div>
+
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {[90, 85, 80, 75, 95].map((val) => (
+              <button
+                key={val}
+                onClick={() => setSizePct(val)}
+                className={`rounded-lg px-2 py-0.5 font-orbitron text-[9px] font-bold ${
+                  sizePct === val
+                    ? 'bg-cyan-500 text-black'
+                    : 'border border-white/10 bg-white/5 text-slate-300'
+                }`}
+              >
+                {val}% / {100 - val}%
+              </button>
+            ))}
+          </div>
+
+          <input
+            type="range"
+            min="50"
+            max="95"
+            value={sizePct}
+            onChange={(e) => setSizePct(parseInt(e.target.value, 10))}
+            className="mt-2.5 w-full accent-cyan-400 cursor-pointer h-2 rounded-lg bg-black/60 border border-white/10"
+          />
+        </div>
       </div>
 
       {/* Result Ladder */}
       <div className="rounded-2xl border border-orange-500/30 bg-[#10152a] p-4">
         <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
           <span className="font-orbitron text-xs font-bold text-white">
-            4-LEVEL MARTINGALE LADDER (90% SIZE • 10% SAME NUM)
+            4-LEVEL MARTINGALE LADDER ({sizePct}% SIZE • {numPct}% SAME NUM)
           </span>
           <span className="font-orbitron text-[10px] font-bold text-emerald-400">
             TOTAL = ₹{plan.totalAllocated} (100% WALLET)
@@ -121,10 +163,10 @@ export const CalculatorTab: React.FC = () => {
 
               <div className="flex flex-wrap items-center gap-2 text-[10px]">
                 <span className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-2.5 py-1 font-orbitron font-bold text-orange-300">
-                  90% Size: ₹{lvl.sizeBet} (Net: +₹{lvl.sizeNetProfit})
+                  {sizePct}% Size: ₹{lvl.sizeBet} (Net: +₹{lvl.sizeNetProfit})
                 </span>
                 <span className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-orbitron font-bold text-emerald-300">
-                  10% Same Num: ₹{lvl.sameNumBet} (Net: +₹{lvl.numNetProfit})
+                  {numPct}% Same Num: ₹{lvl.sameNumBet} (Net: +₹{lvl.numNetProfit})
                 </span>
               </div>
             </div>
@@ -133,13 +175,13 @@ export const CalculatorTab: React.FC = () => {
 
         <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3 text-[10px] text-slate-300 space-y-1">
           <span className="font-bold text-emerald-400 font-orbitron block">
-            ✓ 90% SIZE & 10% SAME-SIDE NUMBER ADVANTAGE:
+            ✓ MANUAL ALLOCATION SPLIT ADVANTAGE:
           </span>
           <p>
-            • 90% of your stake is placed directly on the primary high-confidence size (BIG / SMALL), delivering steady and massive bankroll accumulation.
+            • Customize your stake distribution between Size (1.96x) and Same-Side Number (9.0x) to match your exact risk profile.
           </p>
           <p>
-            • 10% is placed on the single highest-probability number on that exact same side for a 9.0x payout booster. If both hit, you achieve a massive Double Win (+166% profit)!
+            • If both hit, you achieve a massive Double Win payout with combined multiplier!
           </p>
         </div>
       </div>
