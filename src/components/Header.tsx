@@ -1,6 +1,5 @@
 import React from 'react';
-import { Volume2, VolumeX, ShieldCheck, Zap, Wallet, RotateCcw, Settings } from 'lucide-react';
-import { sound } from '../utils/audio';
+import { Volume2, VolumeX, ShieldCheck, Zap, Wallet, Settings } from 'lucide-react';
 import { LicenseInfo } from '../types';
 
 interface HeaderProps {
@@ -34,8 +33,8 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5">
           <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 font-orbitron text-xl font-black text-black shadow-[0_0_20px_rgba(255,107,0,0.4)]">
             N2
-            <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-cyan-500 text-[8px] font-bold text-black ring-2 ring-[#0a0f20]">
-              4L
+            <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 text-[8px] font-bold text-black ring-2 ring-[#0a0f20]">
+              90
             </span>
           </div>
           <div>
@@ -44,11 +43,11 @@ export const Header: React.FC<HeaderProps> = ({
                 NARUTO UZUMAKI V2
               </h1>
               <span className="hidden rounded-full border border-orange-500/30 bg-orange-500/10 px-1.5 py-0.5 font-orbitron text-[9px] font-bold text-orange-400 sm:inline-block">
-                4-LEVEL PRO
+                90% SIZE • 10% NUM
               </span>
             </div>
             <p className="text-[9px] font-semibold tracking-wider text-slate-400">
-              85% SIZE • 15% OPP NUMBER • DUAL GUARANTEED PROFIT
+              4-LEVEL • 90% SIZE / 10% SAME NUM • CYBER MATRIX
             </p>
           </div>
         </div>

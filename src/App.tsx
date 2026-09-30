@@ -84,7 +84,7 @@ export default function App() {
   const pendingPredictionRef = useRef<{
     period: string;
     prediction: 'BIG' | 'SMALL';
-    oppNum: number;
+    sameNum: number;
     levelPlan: any;
     currentLevel: number;
   } | null>(null);
@@ -212,7 +212,7 @@ export default function App() {
       pendingPredictionRef.current = {
         period: targetP,
         prediction: pred.call,
-        oppNum: pred.singleOppositeNum.num,
+        sameNum: pred.singleSameNum.num,
         levelPlan: curActiveLevelPlan,
         currentLevel: currentCurLevel,
       };
@@ -228,7 +228,7 @@ export default function App() {
     const curGame = gameRef.current;
     const actualType = BS(actualNum, curGame);
     const sizeWon = pending.prediction === actualType;
-    const numWon = pending.oppNum === actualNum;
+    const numWon = pending.sameNum === actualNum;
 
     const outcome = calculateRoundPnL(pending.levelPlan, sizeWon, numWon);
 
@@ -241,16 +241,17 @@ export default function App() {
       period: fin.period,
       game: curGame,
       prediction: pending.prediction,
-      predictedOppNum: pending.oppNum,
+      predictedSameNum: pending.sameNum,
       actualType,
       actualNum,
       win: outcome.win,
       jackpot: outcome.jackpot,
       sizeWin: outcome.sizeWin,
+      doubleWin: outcome.doubleWin,
       level: pending.currentLevel,
       betAmount: pending.levelPlan.totalBet,
       sizeBet: pending.levelPlan.sizeBet,
-      numBet: pending.levelPlan.oppNumBet,
+      numBet: pending.levelPlan.sameNumBet,
       pnl: outcome.pnl,
       walletAfter: newWallet,
       conf: currentPrediction?.conf || 85,
@@ -285,7 +286,7 @@ export default function App() {
       }));
     } else {
       sound.playBetPlaced();
-      // Loss advances to next Martingale Level (1 -> 2 -> 3 -> 4)
+      // Loss advances to next Martingale Level (1 -> 2 -> 3 -> 4, with core focus on L1 & L2)
       const nextLevel = Math.min(4, sessionRef.current.level + 1);
 
       setSession((prev) => ({
@@ -498,7 +499,7 @@ export default function App() {
                 ) : (
                   <>
                     <Play className="h-4 w-4 fill-black" />
-                    START 4-LEVEL PREDICTION ENGINE
+                    START 4-LEVEL PREDICTION ENGINE (L1-L2 FOCUS)
                   </>
                 )}
               </button>

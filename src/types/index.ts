@@ -34,26 +34,29 @@ export interface LevelPlan {
   name: string;
   percentage: number; // % of total wallet (sums to 100% across 4 levels)
   totalBet: number;
-  sizeBet: number;    // 85% of totalBet
-  oppNumBet: number;  // 15% of totalBet
+  sizeBet: number;    // 90% of totalBet
+  sameNumBet: number; // 10% of totalBet (Same Side Single Number)
   potentialSizeWin: number;
   potentialNumWin: number;
   sizeNetProfit: number; // Guaranteed net profit if size wins
-  numNetProfit: number;  // Guaranteed net profit if opposite number wins
+  numNetProfit: number;  // Massive profit if same-side number jackpot hits (9.0x)
+  doubleWinProfit: number; // Combined profit if both Size & Same Number hit!
 }
 
 export interface Martingale4Levels {
   walletAmount: number;
   targetAmount: number;
-  currentLevel: number; // 1, 2, 3, 4
+  currentLevel: number; // 1, 2, 3, 4 (Primary Focus on Level 1 & 2)
   levels: LevelPlan[];
   totalAllocated: number;
   isCustomMultiplier?: boolean;
 }
 
-export interface SingleOppositeNumInfo {
+export type Martingale2Levels = Martingale4Levels;
+
+export interface SingleSameNumInfo {
   num: number;
-  oppositeSide: 'BIG' | 'SMALL';
+  side: 'BIG' | 'SMALL';
   score: number;
   reasons: string[];
   gap: number;
@@ -77,7 +80,7 @@ export interface FusionPrediction {
   conf: number;
   agree: number;
   cands: Record<string, 'BIG' | 'SMALL'>;
-  singleOppositeNum: SingleOppositeNumInfo;
+  singleSameNum: SingleSameNumInfo; // Same Side Single Number
   engines: Record<string, any>;
   regime: string;
   risk: 'LOW' | 'MODERATE' | 'HIGH';
@@ -92,12 +95,13 @@ export interface HistoryItem {
   period: string;
   game: GameType;
   prediction: 'BIG' | 'SMALL';
-  predictedOppNum: number;
+  predictedSameNum: number; // Same Side Single Number
   actualType: 'BIG' | 'SMALL';
   actualNum: number;
   win: boolean;
-  jackpot: boolean; // Opp number hit!
+  jackpot: boolean; // Same number hit!
   sizeWin: boolean;
+  doubleWin: boolean; // Both Size & Number Hit!
   level: number;
   betAmount: number;
   sizeBet: number;

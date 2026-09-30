@@ -17,7 +17,7 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
     );
   }
 
-  const { engines, cands, weights, agree, conf, regime, risk, singleOppositeNum } = prediction;
+  const { engines, cands, weights, agree, conf, regime, risk, singleSameNum } = prediction;
   const A = engines.RDX;
   const B = engines.VANTA;
   const C = engines.NOCTIS;
@@ -48,14 +48,14 @@ export const EngineTab: React.FC<EngineTabProps> = ({ prediction }) => {
                 prediction.call === 'BIG' ? 'text-orange-400' : 'text-cyan-400'
               }`}
             >
-              {prediction.call} (80%)
+              {prediction.call} (90%)
             </div>
           </div>
 
           <div className="rounded-xl border border-white/10 bg-black/40 p-2.5">
-            <div className="text-[8px] font-bold text-slate-400 font-orbitron">SINGLE OPP NUM</div>
-            <div className="font-orbitron text-sm font-black text-amber-300">
-              #{singleOppositeNum.num} (20%)
+            <div className="text-[8px] font-bold text-slate-400 font-orbitron">SAME-SIDE NUM</div>
+            <div className="font-orbitron text-sm font-black text-emerald-400">
+              #{singleSameNum.num} (10%)
             </div>
           </div>
 

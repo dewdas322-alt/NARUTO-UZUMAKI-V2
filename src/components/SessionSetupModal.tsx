@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Wallet, ArrowRight, ShieldCheck, Flame, Check, HelpCircle } from 'lucide-react';
+import { Target, Wallet, ArrowRight, ShieldCheck, Flame, Check, Zap } from 'lucide-react';
 import { calculate4LevelMartingale } from '../utils/martingale';
 import { sound } from '../utils/audio';
 
@@ -22,7 +22,7 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
   const [targetStr, setTargetStr] = useState(String(initialTarget || 1000));
   const [error, setError] = useState('');
 
-  const currentWalletVal = Math.max(10, parseInt(walletStr, 10) || 10);
+  const currentWalletVal = Math.max(20, parseInt(walletStr, 10) || 20);
   const currentTargetVal = Math.max(currentWalletVal + 10, parseInt(targetStr, 10) || currentWalletVal * 2);
 
   // Live auto-calculated 4-level plan preview
@@ -31,7 +31,6 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
   const handleWalletPreset = (amt: number) => {
     sound.playClick();
     setWalletStr(String(amt));
-    // Auto adjust target to 2X if target is lower
     if (currentTargetVal <= amt) {
       setTargetStr(String(amt * 2));
     }
@@ -71,14 +70,14 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 font-orbitron font-bold text-black shadow-[0_0_20px_rgba(255,107,0,0.4)]">
-              <Target className="h-6 w-6" />
+              <Zap className="h-6 w-6" />
             </div>
             <div>
               <h2 className="font-orbitron text-sm font-black tracking-wider text-white sm:text-base">
-                {isFirstSetup ? 'SET VIRTUAL WALLET & TARGET' : 'ADJUST TARGET SESSION'}
+                {isFirstSetup ? 'SET WALLET & TARGET SESSION' : 'ADJUST TARGET SESSION'}
               </h2>
               <p className="text-[10px] font-semibold text-slate-400">
-                100% Wallet Auto 4-Level Martingale Allocation
+                4-Level Martingale Ladder • 90% Size & 10% Same-Side Number
               </p>
             </div>
           </div>
@@ -145,7 +144,7 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
             <div className="flex items-center justify-between text-[11px] font-bold text-slate-300">
               <span className="flex items-center gap-1.5 font-orbitron">
                 <Target className="h-3.5 w-3.5 text-cyan-400" />
-                TARGET BALANCE
+                TARGET GOAL
               </span>
               <span className="font-mono text-cyan-400">₹</span>
             </div>
@@ -165,8 +164,8 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
             <div className="mt-2.5 flex flex-wrap gap-1.5">
               {[
                 { label: '+50%', m: 1.5 },
-                { label: '2X (1k)', m: 2 },
-                { label: '3X (1.5k)', m: 3 },
+                { label: '2X', m: 2 },
+                { label: '3X', m: 3 },
                 { label: '5X', m: 5 },
               ].map(({ label, m }) => (
                 <button
@@ -187,7 +186,7 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 font-orbitron text-xs font-bold text-white">
               <Flame className="h-4 w-4 text-orange-400" />
-              LIVE 4-LEVEL BREAKDOWN (85% SIZE • 15% OPP NUM)
+              LIVE 4-LEVEL BREAKDOWN (90% SIZE • 10% SAME NUM)
             </div>
             <div className="font-orbitron text-[10px] font-bold text-emerald-400">
               SUM = ₹{livePlan.totalAllocated} (100% WALLET)
@@ -207,17 +206,22 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
                   <div>
                     <span className="font-orbitron text-xs font-bold text-white">
                       ₹{lvl.totalBet}{' '}
-                      <span className="text-[10px] text-slate-400">({lvl.percentage}%)</span>
+                      <span className="text-[10px] text-slate-400">({lvl.percentage}% wallet)</span>
                     </span>
+                    {lvl.level <= 2 && (
+                      <span className="ml-1.5 rounded bg-cyan-500/20 px-1 py-0.5 text-[8px] font-bold text-cyan-300">
+                        PRIMARY FOCUS
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 text-[10px] font-bold">
                   <span className="rounded-md border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-orange-300">
-                    85% Size: ₹{lvl.sizeBet} (Net: +₹{lvl.sizeNetProfit})
+                    90% Size: ₹{lvl.sizeBet} (Net: +₹{lvl.sizeNetProfit})
                   </span>
-                  <span className="rounded-md border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-cyan-300">
-                    15% Num: ₹{lvl.oppNumBet} (Net: +₹{lvl.numNetProfit})
+                  <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-emerald-300">
+                    10% Same Num: ₹{lvl.sameNumBet} (Net: +₹{lvl.numNetProfit})
                   </span>
                 </div>
               </div>
@@ -225,8 +229,8 @@ export const SessionSetupModal: React.FC<SessionSetupModalProps> = ({
           </div>
 
           <div className="mt-3 flex items-center justify-between text-[10px] text-emerald-400 font-semibold">
-            <span>✓ Every win (Size or Number) yields guaranteed profit!</span>
-            <span>✓ 100% full wallet utilized across 4 levels</span>
+            <span>✓ Primary target focus on Level 1 & Level 2!</span>
+            <span>✓ Double Win when both Size & Number hit</span>
           </div>
         </div>
 

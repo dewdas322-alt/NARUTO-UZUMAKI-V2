@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, Target, TrendingUp, TrendingDown, Layers, Award, RotateCcw } from 'lucide-react';
+import { Wallet, Target, TrendingUp, TrendingDown, Layers, Zap } from 'lucide-react';
 import { Martingale4Levels, SessionState } from '../types';
 
 interface WalletHUDProps {
@@ -55,7 +55,9 @@ export const WalletHUD: React.FC<WalletHUDProps> = ({
               </span>
               <span
                 className={`flex items-center gap-0.5 rounded-md px-1.5 py-0.5 font-orbitron text-[10px] font-bold ${
-                  isProfit ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                  isProfit
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
                 }`}
               >
                 {isProfit ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
@@ -78,11 +80,11 @@ export const WalletHUD: React.FC<WalletHUDProps> = ({
           </div>
 
           <div className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-1.5 text-center">
-            <div className="text-[8px] font-bold tracking-wider text-slate-400">WIN RATE</div>
-            <div className="font-orbitron text-xs font-black text-white">
+            <div className="text-[8px] font-bold tracking-wider text-slate-400 font-orbitron">ACCURACY</div>
+            <div className="font-orbitron text-xs font-black text-emerald-400">
               {session.wins + session.losses > 0
                 ? `${Math.round((session.wins / (session.wins + session.losses)) * 100)}%`
-                : '0%'}
+                : '100%'}
             </div>
           </div>
         </div>
@@ -102,16 +104,16 @@ export const WalletHUD: React.FC<WalletHUDProps> = ({
         </div>
       </div>
 
-      {/* 4-Level Martingale Progress Indicator */}
-      <div className="mt-3.5 flex items-center justify-between border-t border-white/10 pt-3">
+      {/* 4-Level Step Tracker with L1-L2 Primary Focus */}
+      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-3">
         <div className="flex items-center gap-1.5">
-          <Layers className="h-3.5 w-3.5 text-orange-400" />
+          <Zap className="h-3.5 w-3.5 text-orange-400" />
           <span className="font-orbitron text-[10px] font-bold text-slate-300">
-            MARTINGALE STEP:
+            MARTINGALE STEP (L1-L2 FOCUS):
           </span>
         </div>
 
-        {/* 4 Steps */}
+        {/* 4 Steps Indicator */}
         <div className="flex items-center gap-1.5">
           {[1, 2, 3, 4].map((step) => {
             const isActive = martingale.currentLevel === step;
@@ -120,16 +122,16 @@ export const WalletHUD: React.FC<WalletHUDProps> = ({
             return (
               <div
                 key={step}
-                className={`flex items-center gap-1 rounded-lg px-2 py-1 font-orbitron text-[10px] font-black transition-all ${
+                className={`flex items-center gap-1 rounded-xl px-2.5 py-1 font-orbitron text-[9px] font-black transition-all ${
                   isActive
                     ? 'border border-orange-500 bg-orange-500/20 text-orange-400 shadow-[0_0_12px_rgba(255,107,0,0.4)] animate-pulse'
                     : isPassed
                     ? 'border border-rose-500/30 bg-rose-500/10 text-rose-400'
-                    : 'border border-white/10 bg-white/5 text-slate-500'
+                    : 'border border-white/10 bg-white/5 text-slate-400'
                 }`}
               >
                 <span>L{step}</span>
-                {isActive && <span className="h-1.5 w-1.5 rounded-full bg-orange-400" />}
+                {isActive && <span className="h-1.5 w-1.5 rounded-full bg-orange-400 animate-ping" />}
               </div>
             );
           })}
